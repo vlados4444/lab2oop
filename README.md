@@ -28,3 +28,14 @@
 3. Общее количество мест <= 0
 4. Пустой номер рейса
 5. Пункт вылета совпадает с пунктом назначения
+## Этап №2. Проектирование класса
+
+| Элемент | Описание |
+|---|---|
+| Имя класса | Flight |
+| Поля | flightNumber, origin, destination, departureTime, totalSeats, occupiedSeats, status |
+| Конструкторы | по умолчанию, параметризованный, копирования |
+| Методы чтения | getFlightNumber, getOrigin, getDestination, getDepartureTime, getTotalSeats, getOccupiedSeats, getFreeSeats, getStatus, getLoadFactor |
+| Методы изменения | sellTicket, returnTicket, setStatus, cancel |
+| Инварианты | 0 <= occupiedSeats <= totalSeats; totalSeats > 0; flightNumber не пустой; origin != destination |
+| Счётчик объектов | static int objectCount |
