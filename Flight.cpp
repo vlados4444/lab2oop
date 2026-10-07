@@ -83,17 +83,18 @@ Flight::~Flight()
 }
 
 std::string Flight::getFlightNumber() const { return flightNumber; }
-std::string Flight::getOrigin() const { return origin; }
-std::string Flight::getDestination() const { return destination; }
-std::string Flight::getDepartureTime() const { return departureTime; }
-int Flight::getTotalSeats() const { return totalSeats; }
-int Flight::getOccupiedSeats() const { return occupiedSeats; }
-int Flight::getFreeSeats() const { return totalSeats - occupiedSeats; }
-FlightStatus Flight::getStatus() const { return status; }
-double Flight::getLoadFactor() const { return 0.0; }
+std::string Flight::getOrigin() const       { return origin; }
+std::string Flight::getDestination() const  { return destination; }
+std::string Flight::getDepartureTime() const{ return departureTime; }
+int Flight::getTotalSeats() const           { return totalSeats; }
+int Flight::getOccupiedSeats() const        { return occupiedSeats; }
+int Flight::getFreeSeats() const            { return totalSeats - occupiedSeats; }
+FlightStatus Flight::getStatus() const      { return status; }
+
+double Flight::getLoadFactor() const
+{
+    if (totalSeats == 0) return 0.0;
+    return 100.0 * occupiedSeats / totalSeats;
+}
+
 int Flight::getObjectCount() { return objectCount; }
-bool Flight::sellTicket(int) { return false; }
-bool Flight::returnTicket(int) { return false; }
-bool Flight::setStatus(FlightStatus) { return false; }
-void Flight::cancel() {}
-void Flight::print() const {}
