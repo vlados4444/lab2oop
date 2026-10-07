@@ -21,65 +21,47 @@ static std::string statusToString(FlightStatus s)
     return "Unknown";
 }
 
-bool Flight::isValid() const
+bool Flight::sellTicket(int count)
 {
-    if (flightNumber.empty())                  return false;
-    if (origin.empty() || destination.empty()) return false;
-    if (origin == destination)                 return false;
-    if (totalSeats <= 0)                       return false;
-    if (occupiedSeats < 0)                     return false;
-    if (occupiedSeats > totalSeats)            return false;
+    if (count <= 0) return false;
+    if (status == FlightStatus::Cancelled ||
+        status == FlightStatus::Completed) return false;
+    if (occupiedSeats + count > totalSeats) return false;
+    occupiedSeats += count;
     return true;
 }
 
-Flight::Flight()
-    : flightNumber("UNKNOWN"),
-      origin("Unknown"),
-      destination("Unknown"),
-      departureTime("00.00.0000 00:00"),
-      totalSeats(1),
-      occupiedSeats(0),
-      status(FlightStatus::Scheduled)
+bool Flight::returnTicket(int count)
 {
-    ++objectCount;
+    if (count <= 0) return false;
+    if (occupiedSeats - count < 0) return false;
+    occupiedSeats -= count;
+    return true;
 }
 
-Flight::Flight(const std::string& number,
-               const std::string& from,
-               const std::string& to,
-               const std::string& time,
-               int seats,
-               int occupied)
-    : flightNumber(number),
-      origin(from),
-      destination(to),
-      departureTime(time),
-      totalSeats(seats),
-      occupiedSeats(occupied),
-      status(FlightStatus::Scheduled)
+bool Flight::setStatus(FlightStatus newStatus)
 {
-    if (!isValid())
-        throw std::invalid_argument("Flight: нарушены инварианты");
-    ++objectCount;
+    if (status == FlightStatus::Cancelled &&
+        newStatus != FlightStatus::Cancelled) return false;
+    status = newStatus;
+    return true;
 }
 
-Flight::Flight(const Flight& other)
-    : flightNumber(other.flightNumber),
-      origin(other.origin),
-      destination(other.destination),
-      departureTime(other.departureTime),
-      totalSeats(other.totalSeats),
-      occupiedSeats(other.occupiedSeats),
-      status(other.status)
+void Flight::cancel()
 {
-    ++objectCount;
+    status = FlightStatus::Cancelled;
+    occupiedSeats = 0;
 }
 
-Flight::~Flight()
+void Flight::print() const
 {
-    --objectCount;
-    std::cout << "[~Flight] " << flightNumber
-              << " destroyed. Objects left: " << objectCount << "\n";
+    std::cout << "----- Flight " << flightNumber << " -----\n"
+              << "Route:       " << origin << " -> " << destination << "\n"
+              << "Departure:   " << departureTime << "\n"
+              << "Seats:       " << occupiedSeats << " / " << totalSeats
+              << "  (free: " << getFreeSeats() << ")\n"
+              << "Load factor: " << getLoadFactor() << " %\n"
+              << "Status:      " << statusToString(status) << "\n";
 }
 
 std::string Flight::getFlightNumber() const { return flightNumber; }
